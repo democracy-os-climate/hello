@@ -1,0 +1,65 @@
+.has-navbar-top {
+  padding-top: $navbar-height ;
+}
+
+.navbar-right {
+  margin-right: 15px ;
+}
+
+.navbar-center
+{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    margin: auto;
+
+    & > li {
+      float: none ;
+      display: inline-block;
+      vertical-align: middle ;
+
+      margin: 0 $navbar-padding-horizontal ;
+
+      .dropdown-toggle {
+
+        // cf. bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_dropdowns.scss
+        // class .dropdown-menu line 31
+        // sorry no variables avalaible from bootstrap ...
+        min-width: 160px ;
+
+        .glyphicon, .fa {
+          margin-left: $navbar-padding-horizontal ;
+        }
+      }
+
+      .navbar-brand {
+        .navbar > .container &,
+        .navbar > .container-fluid & {
+          margin-left: 0 ;
+        }
+      }
+    }
+
+}
+
+.navbar-sticky {
+  &.affix {
+    top: $navbar-height ;
+    width: 100% ;
+    // z-index: $zindex-navbar-fixed ;
+  }
+
+  &.affix-top { }
+
+  &.affix-bottom { }
+
+}
+
+.navbar {
+  font-family: $headings-font-family ;
+}
+
+.navbar-default {
+  // background-color: transparent ;
+}

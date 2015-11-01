@@ -1,15 +1,6 @@
-$icon-font-path: '../fonts/';
-
-// bower:scss
-@import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
-// endbower
-
-.browserupgrade {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
-  padding: 0.2em 0;
-}
+@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono|Lato:300,400,300italic|Raleway:200);
+$icon-font-path: '../fonts/' !default;
+$fa-font-path: '../fonts' !default;
 
 $palette: (
   "color-dark-gray" : #2D2D2D ,
@@ -22,18 +13,61 @@ $palette: (
   "color-darker-green" : #45630B
 );
 
+$spacer-vertical: 50px ;
+$slider-height: 512px ;
+
+// bootstrap overides
+// cf. bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
+
+$font-family-sans-serif:  "Lato", Helvetica, Arial, sans-serif !default;
+$font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:  "Ubuntu Mono", Menlo, Monaco, Consolas, "Courier New", monospace !default;
+$font-family-base:        $font-family-sans-serif !default;
+
+$font-size-base:          18px;
+$font-size-h1:            41px;
+$font-size-h2:            30px;
+$font-size-h3:            24px;
+$font-size-h4:            20px;
+$font-size-h5:            $font-size-base;
+$font-size-h6:            14px;
+
+$headings-font-family:    "Raleway", sans-serif;
+
+$headings-font-weight:    200;
+
+
+// bower:scss
+@import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "bower_components/font-awesome/scss/font-awesome.scss";
+// endbower
+
+.browserupgrade {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
 
 body {
-  padding-top: $navbar-height ;
+
 }
 
-.navbar-right {
-  margin-right: 15px ;
+.container-sm {
+  @include container-fixed;
+  width: $container-sm;
 }
+
+@import "nav" ;
 
 section {
 
   padding: 15px 25px ;
+
+  &.slider {
+    padding: 0 ;
+    min-height: $slider-height ;
+  }
 
   &.punch-line {
 
@@ -44,21 +78,28 @@ section {
     }
 
     p {
-      font-size: 140% ;
-      margin-bottom: 25px ;
+      font-size: $font-size-large ;
+      font-weight: 300;
+      margin-bottom: $spacer-vertical / 2 ;
+      &:last-child {
+        margin-bottom: $spacer-vertical ;
+      }
     }
   }
 
   &.partner {
+    margin-top: $spacer-vertical ;
+    border-top: 1px solid $gray-lighter ;
+    padding: $spacer-vertical 0 ;
     text-align: center ;
   }
 
 }
 
 footer {
-  
-  padding-top: 25px ;
-  padding-bottom: 25px ;
+
+  padding-top: $spacer-vertical ;
+  padding-bottom: $spacer-vertical / 2 ;
 
   .footer-text {
     vertical-align: middle;
@@ -97,4 +138,18 @@ footer {
     }
 
   }
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
 }

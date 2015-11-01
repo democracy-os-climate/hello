@@ -1,0 +1,107 @@
+extends layouts/default
+
+block content
+  .has-navbar-top
+    nav.navbar.navbar-default.navbar-fixed-top
+      .container
+        ul.nav.navbar-nav.navbar-center
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+              | Menu 
+              span.glyphicon.glyphicon-chevron-down
+            
+            ul.dropdown-menu
+              li
+                a(href='#') menu
+              li
+                a(href='#') menu
+              li
+                a(href='#') menu
+              li
+                a(href='#') menu
+          
+          li
+            a.navbar-brand(href='#') logo
+          
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+              | Menu 
+              span.glyphicon.glyphicon-chevron-down
+            
+            ul.dropdown-menu
+              li
+                a(href='#') menu
+              li
+                a(href='#') menu
+              li
+                a(href='#') menu
+            
+        ul.nav.navbar-nav.navbar-right
+          li
+            a(href='#') T
+          li
+            a(href='#') F
+          li
+            a(href='#') M
+    
+    section.slider
+      img.img-responsive.center-block(data-src='holder.js/100px512?text=hello')
+    
+    nav.navbar.navbar-default.navbar-sticky
+      .container
+        ul.nav.navbar-nav.navbar-center
+          li
+            a(href='#') Menu
+          li
+            a(href='#') Menu
+          li
+            a(href='#') Menu
+    
+    section.punch-line
+      .container-sm
+        h2 Title
+        p
+          | Proactively envisioned multimedia based expertise and cross-media growth strategies. Seamlessly visualize quality intellectual capital without superior collaboration and idea-sharing. Holistically pontificate installed base portals after maintainable products.
+    
+    section
+      img.img-responsive.center-block(data-src='holder.js/853x480?text=video%20player')
+    
+    section.partner
+      .container
+        .row
+          .col-xs-6.col-md-3
+            section
+              img(data-src='holder.js/250x120?text=partner')
+          
+          .col-xs-6.col-md-3
+            section
+              img(data-src='holder.js/250x120?text=partner')
+          
+          .col-xs-6.col-md-3
+            section
+              img(data-src='holder.js/250x120?text=partner')
+          
+          .col-xs-6.col-md-3
+            section
+              img(data-src='holder.js/250x120?text=partner')
+    
+    footer
+      .container
+        .row
+          .col-xs-12.col-md-6.footer-text
+            | hello &copy; 2015 - MIT Licence
+          
+          .col-xs-12.col-md-6
+            nav.navbar.navbar-default
+              ul.nav.navbar-nav
+                li
+                  a(href='#') Menu
+                li
+                  a(href='#') Menu
+                li
+                  a(href='#') Menu
+                
+              p.navbar-text.navbar-right
+                a.navbar-link(href='#')
+                  | Back to top 
+                  span.glyphicon.glyphicon-chevron-up
