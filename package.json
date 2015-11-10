@@ -1,5 +1,30 @@
 {
+  "name": "hello",
+  "description": "a wordpress theme for our landing site",
+  "version": "0.1.0",
+  "homepage": "https://github.com/democracy-os-climate/hello#readme",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/democracy-os-climate/hello.git"
+  },
+  "author": "moustachu@democracyos.eu",
+  "license": "MIT",
+  "keywords": [
+    "yo",
+    "yeoman",
+    "gulp-webapp",
+    "wordpress",
+    "sass",
+    "jade"
+  ],
+  "main": "gulpfile.babel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/democracy-os-climate/hello/issues"
+  },
   "engines": {
     "node": "4.0.0",
     "npm": "2.14.2"
@@ -13,7 +38,7 @@
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-cache": "^0.2.8",
-    "gulp-eslint": "^0.13.2",
+    "gulp-eslint": "^1.0.0",
     "gulp-if": "^1.2.5",
     "gulp-imagemin": "^2.2.1",
     "gulp-jade": "^1.1.0",
@@ -21,13 +46,18 @@
     "gulp-minify-css": "^1.1.1",
     "gulp-minify-html": "^1.0.0",
     "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.0",
     "gulp-size": "^1.2.1",
     "gulp-sourcemaps": "^1.5.0",
     "gulp-uglify": "^1.1.0",
     "gulp-useref": "^1.1.1",
+    "gulp-util": "^3.0.7",
+    "jade": "^1.11.0",
     "main-bower-files": "^2.5.0",
     "opn": "^1.0.1",
+    "phpjade": "^1.4.1",
+    "vinyl-ftp": "^0.4.5",
     "wiredep": "^2.2.2"
   },
   "eslintConfig": {
@@ -49,6 +79,22 @@
       "comma-dangle": [
         1,
         "always-multiline"
+      ],
+      "no-console": 0,
+      "func-names": 0,
+      "id-length": [
+        2,
+        {
+          "exceptions": [
+            "$",
+            "e",
+            "i",
+            "k",
+            "v",
+            "o",
+            "t"
+          ]
+        }
       ]
     }
   }

@@ -36,8 +36,6 @@ pull the repo and execute :
 npm install && bower install
 ```
 
-> TODO : gulp global install
-
 -------
 
 ## build

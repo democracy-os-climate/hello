@@ -1,5 +1,20 @@
-.has-navbar-top {
-  padding-top: $navbar-height ;
+.has-admin-bar {
+
+  .navbar-top {
+    position: absolute;
+    width: 100% ;
+  }
+
+  .navbar-fixed-top {
+    top: 32px ;
+  }
+
+}
+
+.vc_editor {
+  .navbar-fixed-top {
+    top: 56px ;
+  }
 }
 
 .navbar-right {
@@ -19,6 +34,7 @@
       display: inline-block;
       vertical-align: middle ;
 
+      min-width: 210px ;
       margin: 0 $navbar-padding-horizontal ;
 
       .dropdown-toggle {
@@ -43,7 +59,7 @@
 
 }
 
-.navbar-sticky {
+.sticky-row {
   &.affix {
     top: $navbar-height ;
     width: 100% ;
@@ -60,6 +76,16 @@
   font-family: $headings-font-family ;
 }
 
-.navbar-default {
-  // background-color: transparent ;
+.navbar-inverse {
+  background-color: transparent ;
+  border-color: transparent ;
+}
+
+footer {
+  .navbar-text {
+    margin-top: $footer-margin-top-fix ;
+    .glyphicon, .fa {
+      margin-left: 10px ;
+    }
+  }
 }

@@ -2,11 +2,19 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
+import ftp from 'vinyl-ftp' ;
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
+
+import fs from 'fs';
+let info = JSON.parse(fs.readFileSync('./package.json'));
+
+import jade from 'jade';
+import phpjade from 'phpjade';
+phpjade.init(jade);
 
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.scss')
@@ -36,9 +44,9 @@ function lint(files, options) {
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
 gulp.task('html', ['views', 'styles'], () => {
-  const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
+  const assets = $.useref.assets({searchPath: ['.tmp', '.tmp/includes', 'app', '.']});
 
-  return gulp.src(['app/*.html', '.tmp/*.html'])
+  return gulp.src(['app/*.html', '.tmp/**/*.html', '.tmp/**/*.php'])
     .pipe(assets)
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
@@ -49,8 +57,16 @@ gulp.task('html', ['views', 'styles'], () => {
 });
 
 gulp.task('views', () => {
-  return gulp.src('app/*.jade')
-    .pipe($.jade({pretty: true}))
+  return gulp.src(['app/**/*.jade', '!app/layouts/**'])
+    .pipe($.jade({
+      jade: jade,
+      usestrip: true,
+      pretty: true,
+      prefunction: function(input,options) {
+        return input.replace(/###/, 'hello');
+      }
+    }))
+    .pipe($.if('*.php.html', $.rename({ extname: '' })))
     .pipe(gulp.dest('.tmp'))
     .pipe(reload({stream: true}));
 });
@@ -81,9 +97,13 @@ gulp.task('fonts', () => {
 
 gulp.task('extras', () => {
   return gulp.src([
-    'app/*.*',
-    '!app/*.html',
-    '!app/*.jade',
+    'app/**/*',
+    '!app/{layouts,layouts/**}',
+    '!app/{images,images/**}',
+    '!app/{fonts,fonts/**}',
+    '!app/**/*.html',
+    '!app/**/*.scss',
+    '!app/**/*.jade',
   ], {
     dot: true,
   }).pipe(gulp.dest('dist'));
@@ -105,12 +125,13 @@ gulp.task('serve', ['views', 'styles', 'fonts'], () => {
       routes: {
         '/bower_components': 'bower_components',
       },
+      'index': 'mockup.html',
     },
   });
 
   gulp.watch([
     'app/*.html',
-    '.tmp/*.html',
+    '.tmp/**/*.html',
     'app/scripts/**/*.js',
     'app/images/**/*',
     '.tmp/fonts/**/*',
@@ -128,6 +149,7 @@ gulp.task('serve:dist', () => {
     port: 9000,
     server: {
       baseDir: ['dist'],
+      'index': 'mockup.html',
     },
   });
 });
@@ -142,11 +164,75 @@ gulp.task('wiredep', () => {
 
   gulp.src(['app/layouts/*.jade'])
     .pipe(wiredep({
-      exclude: ['bootstrap-sass', 'modernizr'],
+      exclude: ['jquery', 'bootstrap-sass', 'modernizr'],
       ignorePath: /^(\.\.\/)*\.\./,
     }))
     .pipe(gulp.dest('app/layouts/'));
 });
+
+let config = JSON.parse(fs.readFileSync('./.deployrc'));
+
+function getDeployStream(){
+
+  if(!fs.statSync('./.deployrc').isFile()) {
+    throw new $.util.PluginError({
+      plugin: 'deploy',
+      message: '.deployrc config file not found'
+    });
+  } else {
+
+    return ftp.create( {
+        host:     config.host,
+        port:     config.port,
+        user:     config.user,
+        password: config.password,
+        log:      $.util.log
+    });
+
+  }
+}
+
+gulp.task( 'deploy', ['build'], () => {
+
+  let conn = getDeployStream() ;
+
+  return gulp.src( 'dist/**' ,{
+    base: 'dist',
+    buffer: false
+  }).pipe( conn.dest( config.path ) );
+
+}) ;
+
+gulp.task( 'deploy:dev', () => {
+
+  let conn = getDeployStream() ;
+
+  let up = (file,base) => {
+    return gulp.src( [file], { base: base, buffer: false } )
+      .pipe( conn.newer( config.path ) ) // only upload newer files
+      .pipe( conn.dest( config.path ) )
+    ;
+  };
+
+  gulp.watch(['.tmp/**/*']).on('change', (event) => {
+    console.log('Changes detected! Uploading file "' + event.path + '", ' + event.type);
+    return up(event.path,'.tmp') ;
+  });
+
+  gulp.watch([
+    'app/**/*',
+    '!app/{layouts,layouts/**}',
+    '!app/{images,images/**}',
+    '!app/{fonts,fonts/**}',
+    '!app/**/*.html',
+    '!app/**/*.scss',
+    '!app/**/*.jade',
+  ]).on('change', (event) => {
+    console.log('Changes detected! Uploading file "' + event.path + '", ' + event.type);
+    return up(event.path,'app') ;
+  });
+
+}) ;
 
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
