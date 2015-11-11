@@ -61,7 +61,7 @@ function hello_setup() {
 		'top-left' => esc_html__( 'Top Left Menu', 'hello' ),
 		'top-right' => esc_html__( 'Top Right Menu', 'hello' ),
 		'social' => esc_html__( 'Social Menu', 'hello' ),
-		'breadcrump' => esc_html__( 'Custom Breadcrump', 'hello' ),
+		'breadcrumb' => esc_html__( 'Custom breadcrumb', 'hello' ),
 		'footer' => esc_html__( 'Footer Menu', 'hello' ),
 	) );
 

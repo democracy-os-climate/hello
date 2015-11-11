@@ -5,6 +5,8 @@ import browserSync from 'browser-sync';
 import ftp from 'vinyl-ftp' ;
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
+import pngcrush from 'imagemin-pngcrush' ;
+
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
@@ -79,11 +81,13 @@ gulp.task('images', () => {
       // don't remove IDs from SVGs, they are often used
       // as hooks for embedding and styling
       svgoPlugins: [{cleanupIDs: false}],
+      use: [pngcrush({reduce: true})],
     }))
     .on('error', (err) => {
       console.log(err);
       this.end();
     })))
+    .pipe(gulp.dest('.tmp/images'))
     .pipe(gulp.dest('dist/images'));
 });
 
@@ -116,7 +120,7 @@ gulp.task('clean:all', ['clean', 'clean:modules'], () => {
   console.log('npm install && bower install');
 });
 
-gulp.task('serve', ['views', 'styles', 'fonts'], () => {
+gulp.task('serve', ['views', 'styles', 'fonts', 'images'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -140,6 +144,7 @@ gulp.task('serve', ['views', 'styles', 'fonts'], () => {
   gulp.watch('app/**/*.jade', ['views']);
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('app/images/**/*', ['images']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
@@ -172,7 +177,7 @@ gulp.task('wiredep', () => {
 
 let config = JSON.parse(fs.readFileSync('./.deployrc'));
 
-function getDeployStream(){
+function getDeployStream(configSet){
 
   if(!fs.statSync('./.deployrc').isFile()) {
     throw new $.util.PluginError({
@@ -182,35 +187,46 @@ function getDeployStream(){
   } else {
 
     return ftp.create( {
-        host:     config.host,
-        port:     config.port,
-        user:     config.user,
-        password: config.password,
+        host:     configSet.host,
+        port:     configSet.port,
+        user:     configSet.user,
+        password: configSet.password,
         log:      $.util.log
     });
 
   }
 }
 
-gulp.task( 'deploy', ['build'], () => {
+gulp.task( 'deploy:prod', ['build'], () => {
 
-  let conn = getDeployStream() ;
+  let conn = getDeployStream(config.prod) ;
 
   return gulp.src( 'dist/**' ,{
     base: 'dist',
     buffer: false
-  }).pipe( conn.dest( config.path ) );
+  }).pipe( conn.dest( config.prod.path ) );
 
 }) ;
 
-gulp.task( 'deploy:dev', () => {
+gulp.task( 'deploy:dev', ['build'], () => {
 
-  let conn = getDeployStream() ;
+  let conn = getDeployStream(config.dev) ;
+
+  return gulp.src( 'dist/**' ,{
+    base: 'dist',
+    buffer: false
+  }).pipe( conn.dest( config.dev.path ) );
+
+}) ;
+
+gulp.task( 'deploy:watch', () => {
+
+  let conn = getDeployStream(config.dev) ;
 
   let up = (file,base) => {
     return gulp.src( [file], { base: base, buffer: false } )
-      .pipe( conn.newer( config.path ) ) // only upload newer files
-      .pipe( conn.dest( config.path ) )
+      .pipe( conn.newer( config.dev.path ) ) // only upload newer files
+      .pipe( conn.dest( config.dev.path ) )
     ;
   };
 

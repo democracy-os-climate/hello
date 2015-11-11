@@ -23,7 +23,7 @@ html.no-js(__!=-language_attributes())
                 a(href='/about') About us
               - if ( get_header_image() ) :
               li.text-center
-                a(href!=esc_url( home_url( '/' ) ))
+                a.navbar-logo(href!=esc_url( home_url( '/' ) ))
                   img(src!=-header_image())
               - elseif ( display_header_text() ) :
               li

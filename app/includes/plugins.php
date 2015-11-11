@@ -85,23 +85,24 @@ add_action( 'tgmpa_register', 'hello_register_js_composer_plugins' );
 
 
 /**
- * Breadcrump shortcode
+ * breadcrumb shortcode
  */
-function hello_breadcrump_menu( $atts ) {
-  if ( has_nav_menu( 'breadcrump' ) ){
+function hello_breadcrumb_menu( $atts ) {
+  if ( has_nav_menu( 'breadcrumb' ) ){
     $locations = get_nav_menu_locations() ;
-    $menu_id = wp_get_nav_menu_object( $locations['breadcrump'] )->term_id ;
+    $menu_id = wp_get_nav_menu_object( $locations['breadcrumb'] )->term_id ;
 
     return wp_nav_menu( array(
       'menu' => $menu_id,
       'echo' => false,
-      'menu_class' => 'nav navbar-nav navbar-center breadcrump',
+      'menu_class' => 'nav navbar-nav navbar-center',
       'container' => 'nav',
-      'container_class' => 'navbar navbar-breadcrump',
+      'container_class' => 'navbar navbar-default navbar-breadcrumb',
+      'items_wrap' => '<ul id="%1$s" class="%2$s"><div class="breadcrumb-fix-left"></div><div class="breadcrumb-fix-center"></div><div class="breadcrumb-fix-right"></div>%3$s</ul>',
     ));
   }
 }
-add_shortcode( 'breadcrump', 'hello_breadcrump_menu' );
+add_shortcode( 'breadcrumb', 'hello_breadcrumb_menu' );
 
 /**
  * Visual Composer init
@@ -112,8 +113,8 @@ function hello_vcSetAsTheme() {
   vc_set_as_theme();
 
   vc_map( array(
-    'name' => __( 'Breadcrump bar', 'hello' ),
-    'base' => 'breadcrump',
+    'name' => __( 'breadcrumb bar', 'hello' ),
+    'base' => 'breadcrumb',
     'class' => '',
     'category' => __( 'Theme', 'hello'),
     'show_settings_on_create' => false,

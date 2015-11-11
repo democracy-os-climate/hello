@@ -1,17 +1,24 @@
 @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono|Lato:300,400,300italic|Raleway:200);
-$icon-font-path: '../fonts/' !default;
-$fa-font-path: '../fonts' !default;
+$icon-font-path: "../fonts/" !default;
+$fa-font-path: "../fonts" !default;
 
 $palette: (
   "color-dark-gray" : #2D2D2D ,
   "color-gray" : #2D4243 ,
-  "color-light-gray" : #0C8A8F ,
+  "color-light-gray" : #CFCDCD ,
+  "color-lighter-gray" : #F1EFEF ,
   "color-green" : #2DA968 ,
   "color-light-green" : #21CC97 ,
+  "color-medium-blue" : #0C8A8F ,
   "color-light-blue" : #25D5DC ,
   "color-dark-green" : #39863A ,
   "color-darker-green" : #45630B
 );
+
+$breadcrumb-bg-image: "../images/breadcrumb-bg.png" ;
+$breadcrumb-bg-active-image: "../images/breadcrumb-bg-active.png" ;
+$breadcrumb-bg-hover-image: "../images/breadcrumb-bg-hover.png" ;
+
 
 // USAGE : map-get( $palette, "color-dark-gray" );
 
@@ -42,6 +49,8 @@ $headings-font-family:    "Raleway", sans-serif;
 
 $headings-font-weight:    200;
 
+$navbar-default-bg:       map-get( $palette, "color-lighter-gray" );
+$navbar-default-border:   map-get( $palette, "color-light-gray" );
 
 // bower:scss
 @import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
@@ -56,7 +65,7 @@ $headings-font-weight:    200;
 }
 
 body {
-
+  font-weight: 200 ;
 }
 
 .container-sm {
@@ -140,7 +149,22 @@ footer {
   &.full-width-background {
     max-width: 100% ;
   }
+
 }
+
+.vc_row[data-vc-full-width]{
+  max-width: 100% ;
+}
+
+.vc_row[data-vc-stretch-content]{
+  .wpb_wrapper {
+    max-width: 100% ;
+  }
+}
+
+
+
+
 
 /*--------------------------------------------------------------
 ## The loop
