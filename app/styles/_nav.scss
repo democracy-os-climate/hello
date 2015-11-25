@@ -18,6 +18,9 @@
 }
 
 .navbar-top {
+  position: absolute;
+  border-radius: 0;
+  width: 100% ;
   z-index: $zindex-navbar-fixed ;
 }
 
