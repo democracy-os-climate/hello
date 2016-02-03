@@ -6,7 +6,8 @@ import ftp from 'vinyl-ftp' ;
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
 import pngcrush from 'imagemin-pngcrush' ;
-
+import branch from 'git-branch' ;
+import chalk from 'chalk' ;
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
@@ -175,6 +176,10 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app/layouts/'));
 });
 
+
+let currentBranch = branch.sync() ;
+$.util.log(chalk.blue("current git branch is " + currentBranch));
+
 let config = JSON.parse(fs.readFileSync('./.deployrc'));
 
 function getDeployStream(configSet){
@@ -230,6 +235,12 @@ gulp.task( 'deploy:watch', () => {
     ;
   };
 
+  gulp.watch('app/**/*.jade', ['views']);
+  gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('app/images/**/*', ['images']);
+  gulp.watch('bower.json', ['wiredep', 'fonts']);
+
   gulp.watch(['.tmp/**/*']).on('change', (event) => {
     console.log('Changes detected! Uploading file "' + event.path + '", ' + event.type);
     return up(event.path,'.tmp') ;
@@ -253,6 +264,10 @@ gulp.task( 'deploy:watch', () => {
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
+
+gulp.task('nop', () => {
+  $.util.log(chalk.green('>>> gulp file looks OK, thus I did not launch any task yet !')) ;
+}) ;
 
 gulp.task('default', ['clean'], () => {
   gulp.start('build');

@@ -9,6 +9,9 @@
     top: 32px ;
   }
 
+  &.has-navbar-top {
+    // nope
+  }
 }
 
 .vc_editor {
@@ -19,8 +22,9 @@
 
 .navbar-top {
   position: absolute;
-  border-radius: 0;
   width: 100% ;
+  margin-bottom: 0 ;
+  border-radius: 0;
   z-index: $zindex-navbar-fixed ;
 }
 

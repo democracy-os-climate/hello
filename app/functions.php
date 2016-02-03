@@ -102,7 +102,7 @@ function hello_scripts() {
   if( file_exists( get_template_directory() . '/styles/vendor.css') ) {
 	   wp_enqueue_style( 'hello-vendor', get_template_directory_uri() . '/styles/vendor.css' );
   }
-  wp_enqueue_style( 'hello-main', get_template_directory_uri() . '/styles/main.css' );
+  wp_enqueue_style( 'hello-main', get_template_directory_uri() . '/styles/main.css', array('js_composer_front') );
 
 	wp_enqueue_script( 'modernizr', get_template_directory_uri() . '/scripts/modernizr.js', array() , false, false );
 
@@ -127,7 +127,7 @@ add_action( 'wp_enqueue_scripts', 'hello_scripts' );
 
 function hello_body_class($class = ''){
   $classes = array();
-  // $classes[] = 'has-navbar-top' ;
+  $classes[] = 'has-navbar-top' ;
 
   if ( is_admin_bar_showing() ) {
     $classes[] = 'has-admin-bar' ;
