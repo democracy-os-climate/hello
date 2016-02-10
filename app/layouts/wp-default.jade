@@ -1,0 +1,89 @@
+block top-comment
+doctype html
+html.no-js(__!=-language_attributes())
+  head
+    meta(charset!=-bloginfo( 'charset' ))
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='profile' href='http://gmpg.org/xfn/11')
+    link(rel='pingback' href!=-bloginfo( 'pingback_url' ))
+    
+    - wp_head();
+    
+  body(__!=-body_class())
+    #page.site
+      a.skip-link.screen-reader-text(href='#content')
+        - esc_html_e( 'Skip to content', '###' ) ;
+      
+      header#masthead.site-header(role='banner')
+        - $locations = get_nav_menu_locations();
+        nav#site-navigation.site-navigation.navbar.navbar-inverse.navbar-top(role='navigation')
+          .container
+            ul.nav.navbar-nav.navbar-center
+              li
+                a(href='/about') About us
+              - if ( get_header_image() ) :
+              li.text-center
+                a.navbar-logo(href!=esc_url( home_url( '/' ) ))
+                  img(src!=-header_image())
+              - elseif ( display_header_text() ) :
+              li
+                a.navbar-brand(href!=esc_url( home_url( '/' ) ))
+                  - bloginfo( 'name' );
+              - endif;
+              li
+                a(href='/event') Learn & Get Involved
+                
+            ul.nav.navbar-nav.navbar-right
+              li
+                a(href='https://twitter.com/Open_COP21')
+                  span.fa.fa-twitter
+            //-   - if ( has_nav_menu( 'top-left' ) ) :
+            //-   li.dropdown
+            //-     a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+            //-       - _e( wp_get_nav_menu_object( $locations['top-left'] )->name ) ;
+            //-       span.glyphicon.glyphicon-chevron-down
+            //-     - wp_nav_menu( array( 'theme_location' => 'top-left', 'menu_class' => 'dropdown-menu', 'container' => null ) );
+            //-   - endif;
+            //-   - if ( get_header_image() ) :
+            //-   li
+            //-     a.navbar-brand(href='#')
+            //-       img(src!=-header_image())
+            //-   - elseif ( display_header_text() ) :
+            //-   li
+            //-     a.navbar-brand(href='#') 
+            //-       - bloginfo( 'name' );
+            //-   - endif;
+            //-   - if ( has_nav_menu( 'top-right' ) ) :
+            //-   li.dropdown
+            //-     a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+            //-       - _e( wp_get_nav_menu_object( $locations['top-right'] )->name ) ;
+            //-       span.glyphicon.glyphicon-chevron-down
+            //-     - wp_nav_menu( array( 'theme_location' => 'top-right', 'menu_class' => 'dropdown-menu', 'container' => null ) );
+            //-   - endif;
+            //- - if ( has_nav_menu( 'social' ) ) :
+            //-   - wp_nav_menu( array( 'theme_location' => 'social', 'menu_class' => 'nav navbar-nav navbar-right' ) );
+            //- - endif;
+      
+      // #masthead
+      #content
+        block content
+      
+      footer#colophon.site-footer(role='contentinfo')
+        .container
+          .row
+            .col-xs-12.col-md-6.footer-text
+              - hello_footer_text();
+            .col-xs-12.col-md-6
+              nav.navbar.navbar-inverse
+                - if ( has_nav_menu( 'footer' ) ) :
+                  - wp_nav_menu( array( 'theme_location' => 'footer', 'menu_class' => 'nav navbar-nav'  ) );
+                - endif;
+                p.navbar-text.navbar-right
+                  a.navbar-link(href='#')
+                    - _e( 'Back to top', '###' );
+                    span.glyphicon.glyphicon-chevron-up
+      // #colophon
+    // #page
+    - wp_footer();
+  // body
+// html

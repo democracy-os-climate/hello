@@ -1,5 +1,31 @@
-.has-navbar-top {
-  padding-top: $navbar-height ;
+.has-admin-bar {
+
+  .navbar-top {
+    position: absolute;
+    width: 100% ;
+  }
+
+  .navbar-fixed-top {
+    top: 32px ;
+  }
+
+  &.has-navbar-top {
+    // nope
+  }
+}
+
+.vc_editor {
+  .navbar-fixed-top {
+    top: 56px ;
+  }
+}
+
+.navbar-top {
+  position: absolute;
+  width: 100% ;
+  margin-bottom: 0 ;
+  border-radius: 0;
+  z-index: $zindex-navbar-fixed ;
 }
 
 .navbar-right {
@@ -19,6 +45,7 @@
       display: inline-block;
       vertical-align: middle ;
 
+      min-width: 210px ;
       margin: 0 $navbar-padding-horizontal ;
 
       .dropdown-toggle {
@@ -36,14 +63,23 @@
       .navbar-brand {
         .navbar > .container &,
         .navbar > .container-fluid & {
-          margin-left: 0 ;
+          width: 100% ;
+          margin-left: 0;
         }
       }
+
+      .navbar-logo {
+        padding: 0 ;
+        img {
+          max-height: 32px ;
+        }
+      }
+
     }
 
 }
 
-.navbar-sticky {
+.sticky-row {
   &.affix {
     top: $navbar-height ;
     width: 100% ;
@@ -60,6 +96,86 @@
   font-family: $headings-font-family ;
 }
 
-.navbar-default {
-  // background-color: transparent ;
+.navbar-inverse {
+  background-color: transparent ;
+  border-color: transparent ;
+  &.navbar-top {
+    background-color: rgba(0,0,0,0.5);
+  }
+}
+
+.navbar-breadcrumb {
+  border-radius: 0;
+  border-width: 1px 0 1px 0 ;
+  min-height: 102px ;
+  .navbar-nav {
+
+    .breadcrumb-fix-left, .breadcrumb-fix-right , .breadcrumb-fix-center {
+      position: absolute;
+      background-color: white;
+      height: 100%;
+      width: 50% ;
+      margin: 0;
+      visibility: hidden ;
+      &.active {
+        visibility: visible ;
+      }
+    }
+
+    .breadcrumb-fix-left { left: 0; }
+    .breadcrumb-fix-center { width: 350px ; right: 50% ;}
+    .breadcrumb-fix-right { right: 0; }
+
+    li {
+      height: 100%;
+      overflow: visible;
+      min-width: 250px ;
+      a {
+        margin-right: -35px ;
+        height: 100px ;
+        padding-top: 35px ;
+        padding-left: 25px ;
+        background: url($breadcrumb-bg-image) center right no-repeat transparent ;
+        text-align: left ;
+
+
+
+        &:hover {
+          background: url($breadcrumb-bg-hover-image) center right no-repeat transparent ;
+          color: map-get( $palette, "color-light-green" );
+        }
+
+      }
+
+      &.current_page_item a {
+        background: url($breadcrumb-bg-active-image) center right no-repeat $navbar-default-bg ;
+        color: map-get( $palette, "color-light-green" );
+      }
+
+      &:last-of-type {
+        a {
+          background-image: none;
+        }
+
+        &.current_page_item a {
+          background-color: white ;
+        }
+
+      }
+
+
+
+    }
+  }
+
+
+}
+
+footer {
+  .navbar-text {
+    margin-top: $footer-margin-top-fix ;
+    .glyphicon, .fa {
+      margin-left: 10px ;
+    }
+  }
 }

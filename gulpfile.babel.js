@@ -2,11 +2,22 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
+import ftp from 'vinyl-ftp' ;
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
+import pngcrush from 'imagemin-pngcrush' ;
+import branch from 'git-branch' ;
+import chalk from 'chalk' ;
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
+
+import fs from 'fs';
+let info = JSON.parse(fs.readFileSync('./package.json'));
+
+import jade from 'jade';
+import phpjade from 'phpjade';
+phpjade.init(jade);
 
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.scss')
@@ -36,9 +47,9 @@ function lint(files, options) {
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
 gulp.task('html', ['views', 'styles'], () => {
-  const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
+  const assets = $.useref.assets({searchPath: ['.tmp', '.tmp/includes', 'app', '.']});
 
-  return gulp.src(['app/*.html', '.tmp/*.html'])
+  return gulp.src(['app/*.html', '.tmp/**/*.html', '.tmp/**/*.php'])
     .pipe(assets)
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
@@ -49,8 +60,16 @@ gulp.task('html', ['views', 'styles'], () => {
 });
 
 gulp.task('views', () => {
-  return gulp.src('app/*.jade')
-    .pipe($.jade({pretty: true}))
+  return gulp.src(['app/**/*.jade', '!app/layouts/**'])
+    .pipe($.jade({
+      jade: jade,
+      usestrip: true,
+      pretty: true,
+      prefunction: function(input,options) {
+        return input.replace(/###/, 'hello');
+      }
+    }))
+    .pipe($.if('*.php.html', $.rename({ extname: '' })))
     .pipe(gulp.dest('.tmp'))
     .pipe(reload({stream: true}));
 });
@@ -63,11 +82,13 @@ gulp.task('images', () => {
       // don't remove IDs from SVGs, they are often used
       // as hooks for embedding and styling
       svgoPlugins: [{cleanupIDs: false}],
+      use: [pngcrush({reduce: true})],
     }))
     .on('error', (err) => {
       console.log(err);
       this.end();
     })))
+    .pipe(gulp.dest('.tmp/images'))
     .pipe(gulp.dest('dist/images'));
 });
 
@@ -81,9 +102,13 @@ gulp.task('fonts', () => {
 
 gulp.task('extras', () => {
   return gulp.src([
-    'app/*.*',
-    '!app/*.html',
-    '!app/*.jade',
+    'app/**/*',
+    '!app/{layouts,layouts/**}',
+    '!app/{images,images/**}',
+    '!app/{fonts,fonts/**}',
+    '!app/**/*.html',
+    '!app/**/*.scss',
+    '!app/**/*.jade',
   ], {
     dot: true,
   }).pipe(gulp.dest('dist'));
@@ -96,7 +121,7 @@ gulp.task('clean:all', ['clean', 'clean:modules'], () => {
   console.log('npm install && bower install');
 });
 
-gulp.task('serve', ['views', 'styles', 'fonts'], () => {
+gulp.task('serve', ['views', 'styles', 'fonts', 'images'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -105,12 +130,13 @@ gulp.task('serve', ['views', 'styles', 'fonts'], () => {
       routes: {
         '/bower_components': 'bower_components',
       },
+      'index': 'mockup.html',
     },
   });
 
   gulp.watch([
     'app/*.html',
-    '.tmp/*.html',
+    '.tmp/**/*.html',
     'app/scripts/**/*.js',
     'app/images/**/*',
     '.tmp/fonts/**/*',
@@ -119,6 +145,7 @@ gulp.task('serve', ['views', 'styles', 'fonts'], () => {
   gulp.watch('app/**/*.jade', ['views']);
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('app/images/**/*', ['images']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
@@ -128,6 +155,7 @@ gulp.task('serve:dist', () => {
     port: 9000,
     server: {
       baseDir: ['dist'],
+      'index': 'mockup.html',
     },
   });
 });
@@ -142,15 +170,104 @@ gulp.task('wiredep', () => {
 
   gulp.src(['app/layouts/*.jade'])
     .pipe(wiredep({
-      exclude: ['bootstrap-sass', 'modernizr'],
+      exclude: ['jquery', 'bootstrap-sass', 'modernizr'],
       ignorePath: /^(\.\.\/)*\.\./,
     }))
     .pipe(gulp.dest('app/layouts/'));
 });
 
+
+let currentBranch = branch.sync() ;
+$.util.log(chalk.blue("current git branch is " + currentBranch));
+
+let config = JSON.parse(fs.readFileSync('./.deployrc'));
+
+function getDeployStream(configSet){
+
+  if(!fs.statSync('./.deployrc').isFile()) {
+    throw new $.util.PluginError({
+      plugin: 'deploy',
+      message: '.deployrc config file not found'
+    });
+  } else {
+
+    return ftp.create( {
+        host:     configSet.host,
+        port:     configSet.port,
+        user:     configSet.user,
+        password: configSet.password,
+        log:      $.util.log
+    });
+
+  }
+}
+
+gulp.task( 'deploy:prod', ['build'], () => {
+
+  let conn = getDeployStream(config.prod) ;
+
+  return gulp.src( 'dist/**' ,{
+    base: 'dist',
+    buffer: false
+  }).pipe( conn.dest( config.prod.path ) );
+
+}) ;
+
+gulp.task( 'deploy:dev', ['build'], () => {
+
+  let conn = getDeployStream(config.dev) ;
+
+  return gulp.src( 'dist/**' ,{
+    base: 'dist',
+    buffer: false
+  }).pipe( conn.dest( config.dev.path ) );
+
+}) ;
+
+gulp.task( 'deploy:watch', () => {
+
+  let conn = getDeployStream(config.dev) ;
+
+  let up = (file,base) => {
+    return gulp.src( [file], { base: base, buffer: false } )
+      .pipe( conn.newer( config.dev.path ) ) // only upload newer files
+      .pipe( conn.dest( config.dev.path ) )
+    ;
+  };
+
+  gulp.watch('app/**/*.jade', ['views']);
+  gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('app/images/**/*', ['images']);
+  gulp.watch('bower.json', ['wiredep', 'fonts']);
+
+  gulp.watch(['.tmp/**/*']).on('change', (event) => {
+    console.log('Changes detected! Uploading file "' + event.path + '", ' + event.type);
+    return up(event.path,'.tmp') ;
+  });
+
+  gulp.watch([
+    'app/**/*',
+    '!app/{layouts,layouts/**}',
+    '!app/{images,images/**}',
+    '!app/{fonts,fonts/**}',
+    '!app/**/*.html',
+    '!app/**/*.scss',
+    '!app/**/*.jade',
+  ]).on('change', (event) => {
+    console.log('Changes detected! Uploading file "' + event.path + '", ' + event.type);
+    return up(event.path,'app') ;
+  });
+
+}) ;
+
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
+
+gulp.task('nop', () => {
+  $.util.log(chalk.green('>>> gulp file looks OK, thus I did not launch any task yet !')) ;
+}) ;
 
 gulp.task('default', ['clean'], () => {
   gulp.start('build');

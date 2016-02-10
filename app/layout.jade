@@ -47,10 +47,13 @@ block content
     section.slider
       img.img-responsive.center-block(data-src='holder.js/100px512?text=hello')
     
-    nav.navbar.navbar-default.navbar-sticky
+    nav.navbar.navbar-default.navbar-breadcrumb.navbar-sticky
       .container
         ul.nav.navbar-nav.navbar-center
-          li
+          div.breadcrumb-fix-left.active
+          div.breadcrumb-fix-center
+          div.breadcrumb-fix-right
+          li.current_page_item
             a(href='#') Menu
           li
             a(href='#') Menu
@@ -92,7 +95,7 @@ block content
             | hello &copy; 2015 - MIT Licence
           
           .col-xs-12.col-md-6
-            nav.navbar.navbar-default
+            nav.navbar.navbar-inverse
               ul.nav.navbar-nav
                 li
                   a(href='#') Menu

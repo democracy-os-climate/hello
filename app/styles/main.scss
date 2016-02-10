@@ -1,23 +1,36 @@
 @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono|Lato:300,400,300italic|Raleway:200);
-$icon-font-path: '../fonts/' !default;
-$fa-font-path: '../fonts' !default;
+$icon-font-path: "../fonts/" !default;
+$fa-font-path: "../fonts" !default;
 
 $palette: (
   "color-dark-gray" : #2D2D2D ,
   "color-gray" : #2D4243 ,
-  "color-light-gray" : #0C8A8F ,
+  "color-light-gray" : #CFCDCD ,
+  "color-lighter-gray" : #F1EFEF ,
   "color-green" : #2DA968 ,
   "color-light-green" : #21CC97 ,
+  "color-medium-blue" : #0C8A8F ,
   "color-light-blue" : #25D5DC ,
   "color-dark-green" : #39863A ,
   "color-darker-green" : #45630B
 );
 
+$breadcrumb-bg-image: "../images/breadcrumb-bg.png" ;
+$breadcrumb-bg-active-image: "../images/breadcrumb-bg-active.png" ;
+$breadcrumb-bg-hover-image: "../images/breadcrumb-bg-hover.png" ;
+
+
+// USAGE : map-get( $palette, "color-dark-gray" );
+
 $spacer-vertical: 50px ;
 $slider-height: 512px ;
 
+$footer-margin-top-fix: 17.5px ;
+
 // bootstrap overides
 // cf. bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
+
+$brand-primary : #3291d7 ; // rgb(50,145,215) "steelblue"
 
 $font-family-sans-serif:  "Lato", Helvetica, Arial, sans-serif !default;
 $font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
@@ -36,6 +49,8 @@ $headings-font-family:    "Raleway", sans-serif;
 
 $headings-font-weight:    200;
 
+$navbar-default-bg:       map-get( $palette, "color-lighter-gray" );
+$navbar-default-border:   map-get( $palette, "color-light-gray" );
 
 // bower:scss
 @import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
@@ -50,7 +65,7 @@ $headings-font-weight:    200;
 }
 
 body {
-
+  font-weight: 200 ;
 }
 
 .container-sm {
@@ -101,10 +116,260 @@ footer {
   padding-top: $spacer-vertical ;
   padding-bottom: $spacer-vertical / 2 ;
 
+  font-size: 80% ;
+
+  background-color: map-get( $palette, "color-dark-gray" );
+  color: $navbar-inverse-color ;
+
   .footer-text {
     vertical-align: middle;
+    margin-top: $footer-margin-top-fix ;
   }
 
+}
+
+/*--------------------------------------------------------------
+## Pages
+--------------------------------------------------------------*/
+
+
+/*--------------------------------------------------------------
+# Content
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+## Visual Composer
+--------------------------------------------------------------*/
+
+.vc_row {
+  &.wpb_row , .wpb_wrapper {
+  	max-width: $container-md ;
+  	margin-left: auto ;
+  	margin-right: auto ;
+  }
+  &.full-width-background {
+    max-width: 100% ;
+  }
+
+}
+
+.vc_row[data-vc-full-width]{
+  max-width: 100% ;
+}
+
+.vc_row[data-vc-stretch-content]{
+  .wpb_wrapper {
+    max-width: 100% ;
+  }
+}
+
+.wpb_single_image .vc_figure {
+    display: block; /* inline-block*/
+}
+
+
+
+/*--------------------------------------------------------------
+## The loop
+--------------------------------------------------------------*/
+
+article.loop {
+
+
+	$thumb-width : 300px ;
+	$icon-size : 64px ;
+	$icon-font-size : 32px ;
+
+
+	.entry-thumbnail {
+		@include square($thumb-width) ;
+		background-size: cover ;
+		background-position: center center ;
+	}
+
+	.entry-summary {
+
+		padding: 15px ;
+
+		min-height: $icon-size ;
+
+		font-size: $icon-size / 3 ;
+
+		.dashicons {
+
+			float: left ;
+
+			margin: 0px 10px 10px 0px ;
+
+			font-size: $icon-size * 0.8 ;
+
+			@include square( $icon-size ) ;
+
+			color: $brand-primary ;
+			padding-top: 2px  ;
+
+		}
+
+	}
+
+	.entry-meta {
+
+		@include square($thumb-width) ;
+		position: absolute ;
+
+		padding: 15px ;
+
+		background-color: rgba(0, 0, 0, 0.5) ;
+		opacity: 0 ;
+
+		text-align: center ;
+		color: white ;
+
+		.dashicons {
+			@include square( $icon-font-size ) ;
+			font-size: $icon-font-size ;
+			background-color: $brand-primary ;
+			color: white ;
+			padding-top: 1px ;
+		}
+
+		a:hover{
+			text-decoration: none ;
+		}
+
+		.entry-title {
+			font-size: 24px ;
+		}
+
+		&:hover {
+			opacity: 1 ;
+		}
+
+
+	}
+
+}
+
+/*--------------------------------------------------------------
+# Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+	border: none;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+embed,
+iframe,
+object {
+	max-width: 100%;
+}
+
+/*--------------------------------------------------------------
+## Captions
+--------------------------------------------------------------*/
+.wp-caption {
+	margin-bottom: 1.5em;
+	max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin: 0 auto;
+}
+
+.wp-caption-text {
+	text-align: center;
+}
+
+.wp-caption .wp-caption-text {
+	margin: 0.8075em 0;
+}
+
+/*--------------------------------------------------------------
+## Galleries
+--------------------------------------------------------------*/
+.gallery {
+	margin-bottom: 1.5em;
+}
+
+.gallery-item {
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	width: 100%;
+}
+
+.gallery-columns-2 .gallery-item {
+	max-width: 50%;
+}
+
+.gallery-columns-3 .gallery-item {
+	max-width: 33.33%;
+}
+
+.gallery-columns-4 .gallery-item {
+	max-width: 25%;
+}
+
+.gallery-columns-5 .gallery-item {
+	max-width: 20%;
+}
+
+.gallery-columns-6 .gallery-item {
+	max-width: 16.66%;
+}
+
+.gallery-columns-7 .gallery-item {
+	max-width: 14.28%;
+}
+
+.gallery-columns-8 .gallery-item {
+	max-width: 12.5%;
+}
+
+.gallery-columns-9 .gallery-item {
+	max-width: 11.11%;
+}
+
+.gallery-caption {
+	display: block;
+}
+
+
+/*--------------------------------------------------------------
+# Accessibility
+--------------------------------------------------------------*/
+/* Text meant only for screen readers. */
+.screen-reader-text {
+	clip: rect(1px, 1px, 1px, 1px);
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	border-radius: 3px;
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	clip: auto !important;
+	color: #21759b;
+	display: block;
+	font-size: 14px;
+	font-size: 0.875rem;
+	font-weight: bold;
+	height: auto;
+	left: 5px;
+	line-height: normal;
+	padding: 15px 23px 14px;
+	text-decoration: none;
+	top: 5px;
+	width: auto;
+	z-index: 100000; /* Above WP toolbar. */
 }
 
 
